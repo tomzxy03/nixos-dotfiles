@@ -70,7 +70,7 @@ keys = [
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key(
         [mod],
-        "f",
+        "o",
         lazy.window.toggle_fullscreen(),
         desc="Toggle fullscreen on the focused window",
     ),
@@ -80,8 +80,10 @@ keys = [
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "b", lazy.spawn("firefox")), 
     Key([mod], "f", lazy.spawn("pcmanfm")),
+    Key([mod], "i", lazy.spawn("idea-community")),
+    Key([mod], "c", lazy.spawn("code .")),
     Key([mod], "d", lazy.spawn("rofi -show drun")),
-]
+
 
 # Add key bindings to switch VTs in Wayland.
 # We can't check qtile.core.name in default config as it is loaded before qtile is started
@@ -148,36 +150,55 @@ extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(
-        bottom=bar.Bar(
+        top=bar.Bar(
+            [screens = [
+    Screen(
+        top=bar.Bar(
             [
-                widget.CurrentLayout(),
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Chord(
-                    chords_colors={
-                        "launch": ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
+                widget.CurrentLayoutIcon(scale=0.7),
+                widget.GroupBox(
+                    highlight_method='line',
+                    active='#ffffff',
+                    inactive='#888888',
+                    highlight_color=['#282c34', '#3c4048'],
+                    this_current_screen_border='#ff79c6',
+                    rounded=True,
+                    padding=5,
                 ),
-                
-                
-                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
-                # widget.StatusNotifier(),
-                widget.Systray(),
-                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                widget.QuickExit(),
+                widget.Spacer(length=10),
+                widget.WindowName(
+                    format='{name}',
+                    max_chars=40
+                ),
+                widget.Spacer(),
+
+                widget.Volume(
+                    fmt='🔊 {}',
+                    padding=10
+                ),
+                widget.Battery(
+                    format='🔋 {percent:2.0%}',
+                    update_interval=30,
+                    padding=10
+                ),
+                widget.Clock(
+                    format='📅 %Y-%m-%d 🕒 %H:%M',
+                    padding=10
+                ),
+                widget.QuickExit(
+                    default_text='⏻',
+                    countdown_format='[{}]',
+                    padding=10,
+                    foreground='red'
+                ),
             ],
-            24,
-            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
-            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
+            28,  # chiều cao
+            background='#1e1e2eDD',  # màu nền mờ
+            margin=[4, 8, 4, 8],     # khoảng cách trên dưới
         ),
-        # You can uncomment this variable if you see that on X11 floating resize/moving is laggy
-        # By default we handle these events delayed to already improve performance, however your system might still be struggling
-        # This variable is set to None (no cap) by default, but you can set it to 60 to indicate that you limit it to 60 events per second
-        # x11_drag_polling_rate = 60,
     ),
 ]
+
 
 # Drag floating layouts.
 mouse = [
